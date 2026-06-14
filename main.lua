@@ -15,12 +15,12 @@ local RunService = game:GetService("RunService")
 
 -- ========== CONFIGURATION ==========
 local TAB_URLS = {
-    main = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/main_tab.lua",
-    misc = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/misc_tab.lua",
-    teleport = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/teleport_tab.lua",
-    settings = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/settings_tab.lua",
-    esp = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/esp_tab.lua",
-    garden = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/garden_tab.lua",
+    main = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/main.lua",
+    misc = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/miscb.lua",
+    teleport = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/teleport.lua",
+    settings = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/settings.lua",
+    esp = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/esp.lua",
+    garden = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/garden.lua",
     exploit = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/exploit.lua"
 }
 
