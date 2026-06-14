@@ -1,7 +1,6 @@
 -- ============================================
--- ADVANCED HUB SYSTEM - DARK THEME
--- Toggle key: Right Shift
--- Tabs load from external URLs
+-- DARK HUB - CORE (hub.lua)
+-- Toggle: Right Shift
 -- ============================================
 
 local Players = game:GetService("Players")
@@ -13,10 +12,10 @@ local TweenService = game:GetService("TweenService")
 local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
 
--- ========== CONFIGURATION ==========
+-- ========== TAB URLS (no _tab suffix) ==========
 local TAB_URLS = {
-    main = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/main.lua",
-    misc = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/miscb.lua",
+    main = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/main.lua",   -- your main tab content
+    misc = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/misc.lua",
     teleport = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/teleport.lua",
     settings = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/settings.lua",
     esp = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/esp.lua",
@@ -24,10 +23,43 @@ local TAB_URLS = {
     exploit = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/main/exploit.lua"
 }
 
+-- IMPORTANT: The file "main.lua" referenced above is your MAIN TAB CONTENT, NOT the core hub.
+-- So you must create a separate file called main.lua that contains the Main tab UI.
+-- The core hub is this file (hub.lua).
+
 local currentTab = nil
 local contentFrame = nil
 local loadingOverlay = nil
 local isFetching = false
+
+-- ========== SETTINGS ==========
+if _G.HubSettings == nil then
+    _G.HubSettings = {
+        blurEnabled = true,
+        blurStrength = 16,
+        notifications = true,
+        autoSave = true,
+    }
+end
+
+local function LoadSettings()
+    local success, saved = pcall(function()
+        return player:GetAttribute("HubSettings")
+    end)
+    if success and saved then
+        for k, v in pairs(saved) do
+            _G.HubSettings[k] = v
+        end
+    end
+end
+
+local function SaveSettings()
+    pcall(function()
+        player:SetAttribute("HubSettings", _G.HubSettings)
+    end)
+end
+
+LoadSettings()
 
 -- ========== CREATE UI ==========
 local screenGui = Instance.new("ScreenGui")
@@ -36,13 +68,11 @@ screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 screenGui.Parent = playerGui
 
--- Blur effect (modern dark theme)
 local blur = Instance.new("BlurEffect")
 blur.Name = "HubBlur"
-blur.Size = 0
+blur.Size = _G.HubSettings.blurEnabled and _G.HubSettings.blurStrength or 0
 blur.Parent = Lighting
 
--- Main container
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 880, 0, 600)
@@ -54,21 +84,9 @@ mainFrame.Visible = false
 mainFrame.ClipsDescendants = true
 mainFrame.Parent = screenGui
 
--- Main corner radius
 local mainCorner = Instance.new("UICorner")
 mainCorner.CornerRadius = UDim.new(0, 16)
 mainCorner.Parent = mainFrame
-
--- Drop shadow (subtle)
-local shadow = Instance.new("ImageLabel")
-shadow.Size = UDim2.new(1, 40, 1, 40)
-shadow.Position = UDim2.new(0, -20, 0, -20)
-shadow.BackgroundTransparency = 1
-shadow.Image = "rbxassetid://1316044814"
-shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-shadow.ImageTransparency = 0.8
-shadow.ZIndex = 0
-shadow.Parent = mainFrame
 
 -- Header
 local header = Instance.new("Frame")
@@ -82,7 +100,6 @@ local headerCorner = Instance.new("UICorner")
 headerCorner.CornerRadius = UDim.new(0, 16)
 headerCorner.Parent = header
 
--- Title & icon
 local titleIcon = Instance.new("TextLabel")
 titleIcon.Size = UDim2.new(0, 40, 1, 0)
 titleIcon.Position = UDim2.new(0, 15, 0, 0)
@@ -104,7 +121,6 @@ title.Font = Enum.Font.GothamBold
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = header
 
--- Close button
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 38, 0, 38)
 closeBtn.Position = UDim2.new(1, -48, 0, 11)
@@ -119,7 +135,7 @@ local closeCorner = Instance.new("UICorner")
 closeCorner.CornerRadius = UDim.new(0, 8)
 closeCorner.Parent = closeBtn
 
--- Sidebar (scrollable)
+-- Sidebar
 local sidebar = Instance.new("ScrollingFrame")
 sidebar.Size = UDim2.new(0, 200, 1, -60)
 sidebar.Position = UDim2.new(0, 0, 0, 60)
@@ -129,10 +145,6 @@ sidebar.BorderSizePixel = 0
 sidebar.ScrollBarThickness = 3
 sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 sidebar.Parent = mainFrame
-
-local sidebarCorner = Instance.new("UICorner")
-sidebarCorner.CornerRadius = UDim.new(0, 0)
-sidebarCorner.Parent = sidebar
 
 local sidebarLayout = Instance.new("UIListLayout")
 sidebarLayout.Padding = UDim.new(0, 6)
@@ -165,7 +177,7 @@ contentPadding.PaddingRight = UDim.new(0, 15)
 contentPadding.PaddingBottom = UDim.new(0, 15)
 contentPadding.Parent = contentFrame
 
--- Loading overlay (modern spinner)
+-- Loading overlay
 loadingOverlay = Instance.new("Frame")
 loadingOverlay.Size = UDim2.new(1, 0, 1, 0)
 loadingOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -194,7 +206,6 @@ loadingText.TextSize = 16
 loadingText.Font = Enum.Font.Gotham
 loadingText.Parent = loadingOverlay
 
--- Rotate spinner animation
 local spinConnection = nil
 local function StartSpinner()
     if spinConnection then spinConnection:Disconnect() end
@@ -250,12 +261,11 @@ for _, tab in ipairs(tabs) do
     end)
 end
 
--- Adjust sidebar canvas size
 sidebarLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     sidebar.CanvasSize = UDim2.new(0, 0, 0, sidebarLayout.AbsoluteContentSize.Y + 25)
 end)
 
--- ========== HELPER FUNCTIONS FOR TABS ==========
+-- ========== HELPER FUNCTIONS (for tabs) ==========
 local function CreateButton(text, callback, yPos)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0.92, 0, 0, 42)
@@ -271,7 +281,6 @@ local function CreateButton(text, callback, yPos)
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = btn
     
-    -- Hover effect
     btn.MouseEnter:Connect(function()
         TweenService:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(55, 55, 65)}):Play()
     end)
@@ -424,19 +433,25 @@ local function CreateSlider(text, minVal, maxVal, defaultVal, callback, yPos)
     return {frame = frame, getValue = function() return currentValue end}
 end
 
--- ========== TAB LOADING SYSTEM ==========
+-- Expose helpers for tabs
+_G.HubHelpers = {
+    CreateButton = CreateButton,
+    CreateToggle = CreateToggle,
+    CreateSlider = CreateSlider,
+}
+
+-- ========== TAB LOADING FUNCTION ==========
 function LoadTab(tabId)
     if isFetching then return end
     if currentTab == tabId then return end
     
-    -- Clear content area
+    -- Clear content
     for _, child in pairs(contentFrame:GetChildren()) do
         if child ~= loadingOverlay and child ~= contentPadding then
             child:Destroy()
         end
     end
     
-    -- Show loading overlay
     loadingOverlay.Visible = true
     loadingText.Text = "Loading " .. string.upper(tabId) .. " tab..."
     StartSpinner()
@@ -451,11 +466,10 @@ function LoadTab(tabId)
         return
     end
     
-    -- Fetch with retry (up to 2 retries)
     local scriptContent = nil
     for attempt = 1, 3 do
         local success, result = pcall(function()
-            return HttpService:GetAsync(url, true) -- true = async
+            return HttpService:GetAsync(url, true)
         end)
         if success then
             scriptContent = result
@@ -472,7 +486,6 @@ function LoadTab(tabId)
         end
     end
     
-    -- Execute the script
     local func, err = loadstring(scriptContent)
     if not func then
         loadingText.Text = "Script error: Invalid format"
@@ -482,7 +495,6 @@ function LoadTab(tabId)
         return
     end
     
-    -- Sandbox environment for the tab
     local tabEnv = {
         contentFrame = contentFrame,
         player = player,
@@ -495,6 +507,7 @@ function LoadTab(tabId)
         CreateButton = CreateButton,
         CreateToggle = CreateToggle,
         CreateSlider = CreateSlider,
+        LoadTab = LoadTab,
     }
     setfenv(func, tabEnv)
     
@@ -516,8 +529,6 @@ function LoadTab(tabId)
     end
     
     currentTab = tabId
-    
-    -- Highlight active button
     for id, btn in pairs(tabButtons) do
         btn.BackgroundTransparency = (id == tabId) and 0.1 or 0.3
     end
@@ -529,19 +540,17 @@ closeBtn.MouseButton1Click:Connect(function()
     blur.Size = 0
 end)
 
--- Toggle hub with RIGHT SHIFT
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.KeyCode == Enum.KeyCode.RightShift then
         mainFrame.Visible = not mainFrame.Visible
-        blur.Size = mainFrame.Visible and 16 or 0
+        blur.Size = mainFrame.Visible and _G.HubSettings.blurStrength or 0
         if mainFrame.Visible and not currentTab then
             LoadTab("main")
         end
     end
 end)
 
--- Dragging (only from header)
 local dragStart = nil
 mainFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -565,4 +574,4 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
-print("Dark Hub Loaded. Press Right Shift to open.")
+print("Dark Hub loaded. Press Right Shift to open.")
