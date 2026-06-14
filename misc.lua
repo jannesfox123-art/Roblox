@@ -42,7 +42,7 @@ resetButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Jump Power control
+-- Jump Power control 1
 local jumpButton = Instance.new("TextButton")
 jumpButton.Size = UDim2.new(1, 0, 0, 30)
 jumpButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
