@@ -1,466 +1,476 @@
--- Main GUI Loader Script
+-- ============================================
+-- Misc Tab - Professional Features Hub
+-- ============================================
+
 local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
--- Create the main ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "CustomHub"
-screenGui.Parent = playerGui
-screenGui.ResetOnSpawn = false
-
--- Services
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
--- Create main frame with modern design
-local mainFrame = Instance.new("Frame")
-mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 550, 0, 500)
-mainFrame.Position = UDim2.new(0.5, -275, 0.5, -250)
-mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-mainFrame.BorderSizePixel = 0
-mainFrame.ClipsDescendants = true
-mainFrame.Parent = screenGui
+-- Create UI elements inside the container
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -20, 0, 35)
+title.BackgroundTransparency = 1
+title.Text = "🎮 Miscellaneous Features"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 20
+title.Font = Enum.Font.GothamBold
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = container
 
--- Add shadow effect
-local shadow = Instance.new("Frame")
-shadow.Size = UDim2.new(1, 20, 1, 20)
-shadow.Position = UDim2.new(0, -10, 0, -10)
-shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-shadow.BackgroundTransparency = 0.7
-shadow.BorderSizePixel = 0
-shadow.Parent = mainFrame
+-- ============================================
+-- FLY SYSTEM with ADVANCED ANTI-FLY BYPASS
+-- ============================================
+local flyFrame = Instance.new("Frame")
+flyFrame.Size = UDim2.new(1, -20, 0, 220)
+flyFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+flyFrame.BorderSizePixel = 0
+flyFrame.Parent = container
 
--- Make frame draggable
-local dragging = false
-local dragInput, dragStart, startPos
+local flyCorner = Instance.new("UICorner")
+flyCorner.CornerRadius = UDim.new(0, 8)
+flyCorner.Parent = flyFrame
 
-mainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = mainFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
+local flyTitle = Instance.new("TextLabel")
+flyTitle.Size = UDim2.new(1, -10, 0, 25)
+flyTitle.Position = UDim2.new(0, 5, 0, 5)
+flyTitle.BackgroundTransparency = 1
+flyTitle.Text = "✈️ Flight System (Advanced Anti-Fly Bypass)"
+flyTitle.TextColor3 = Color3.fromRGB(100, 200, 255)
+flyTitle.TextSize = 15
+flyTitle.Font = Enum.Font.GothamBold
+flyTitle.TextXAlignment = Enum.TextXAlignment.Left
+flyTitle.Parent = flyFrame
+
+-- Fly toggle button
+local flyToggle = Instance.new("TextButton")
+flyToggle.Size = UDim2.new(0.48, 0, 0, 35)
+flyToggle.Position = UDim2.new(0, 10, 0, 35)
+flyToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+flyToggle.Text = "🔘 Enable Fly"
+flyToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+flyToggle.TextSize = 14
+flyToggle.Font = Enum.Font.GothamBold
+flyToggle.Parent = flyFrame
+
+local flyToggleCorner = Instance.new("UICorner")
+flyToggleCorner.CornerRadius = UDim.new(0, 6)
+flyToggleCorner.Parent = flyToggle
+
+-- Anti-fly bypass toggle (advanced)
+local antiFlyBypass = Instance.new("TextButton")
+antiFlyBypass.Size = UDim2.new(0.48, 0, 0, 35)
+antiFlyBypass.Position = UDim2.new(0.52, -10, 0, 35)
+antiFlyBypass.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+antiFlyBypass.Text = "🛡️ Adv Bypass: OFF"
+antiFlyBypass.TextColor3 = Color3.fromRGB(255, 255, 255)
+antiFlyBypass.TextSize = 13
+antiFlyBypass.Font = Enum.Font.GothamBold
+antiFlyBypass.Parent = flyFrame
+
+local bypassCorner = Instance.new("UICorner")
+bypassCorner.CornerRadius = UDim.new(0, 6)
+bypassCorner.Parent = antiFlyBypass
+
+-- Fly speed slider
+local flySpeedLabel = Instance.new("TextLabel")
+flySpeedLabel.Size = UDim2.new(0.4, 0, 0, 25)
+flySpeedLabel.Position = UDim2.new(0, 10, 0, 80)
+flySpeedLabel.BackgroundTransparency = 1
+flySpeedLabel.Text = "Fly Speed: 50"
+flySpeedLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+flySpeedLabel.TextSize = 13
+flySpeedLabel.Font = Enum.Font.Gotham
+flySpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
+flySpeedLabel.Parent = flyFrame
+
+local flySliderBg = Instance.new("Frame")
+flySliderBg.Size = UDim2.new(0.9, 0, 0, 4)
+flySliderBg.Position = UDim2.new(0, 10, 0, 110)
+flySliderBg.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+flySliderBg.BorderSizePixel = 0
+flySliderBg.Parent = flyFrame
+
+local flySliderFill = Instance.new("Frame")
+flySliderFill.Size = UDim2.new(0.5, 0, 1, 0)
+flySliderFill.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
+flySliderFill.BorderSizePixel = 0
+flySliderFill.Parent = flySliderBg
+
+local flySliderButton = Instance.new("TextButton")
+flySliderButton.Size = UDim2.new(0, 16, 0, 16)
+flySliderButton.Position = UDim2.new(0.5, -8, 0, -6)
+flySliderButton.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
+flySliderButton.BorderSizePixel = 0
+flySliderButton.Text = ""
+flySliderButton.Parent = flyFrame
+
+-- Fly variables
+local flying = false
+local flySpeed = 50
+local antiBypass = false
+local bodyVelocity = nil
+local bodyGyro = nil
+local flyConnections = {}
+
+-- Advanced anti-fly bypass: constantly reapplies velocity, prevents anti-fly scripts from detecting
+local function advancedBypass(rootPart, velocity)
+    if not antiBypass or not flying then return end
+    -- Multiple methods: reset velocity every frame, fake character state, and override anti-fly checks
+    task.spawn(function()
+        while antiBypass and flying and rootPart and bodyVelocity do
+            bodyVelocity.Velocity = velocity
+            -- Also try to modify humanoid state if needed
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                local hum = player.Character.Humanoid
+                if hum:GetState() == Enum.HumanoidStateType.Freefall then
+                    hum:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
             end
-        end)
+            RunService.Heartbeat:Wait()
+        end
+    end)
+end
+
+local function startFly()
+    if not player.Character then return end
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+    local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+    if not humanoid or not rootPart then return end
+    
+    humanoid.PlatformStand = true
+    bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.MaxForce = Vector3.new(1/0, 1/0, 1/0)
+    bodyVelocity.Parent = rootPart
+    
+    bodyGyro = Instance.new("BodyGyro")
+    bodyGyro.MaxTorque = Vector3.new(1/0, 1/0, 1/0)
+    bodyGyro.Parent = rootPart
+    
+    local lastMove = tick()
+    local keys = {W = false, S = false, A = false, D = false, Space = false, Q = false, E = false}
+    
+    local inputBegan = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        local key = input.KeyCode
+        if key == Enum.KeyCode.W then keys.W = true end
+        if key == Enum.KeyCode.S then keys.S = true end
+        if key == Enum.KeyCode.A then keys.A = true end
+        if key == Enum.KeyCode.D then keys.D = true end
+        if key == Enum.KeyCode.Space then keys.Space = true end
+        if key == Enum.KeyCode.Q then keys.Q = true end
+        if key == Enum.KeyCode.E then keys.E = true end
+    end)
+    
+    local inputEnded = UserInputService.InputEnded:Connect(function(input)
+        local key = input.KeyCode
+        if key == Enum.KeyCode.W then keys.W = false end
+        if key == Enum.KeyCode.S then keys.S = false end
+        if key == Enum.KeyCode.A then keys.A = false end
+        if key == Enum.KeyCode.D then keys.D = false end
+        if key == Enum.KeyCode.Space then keys.Space = false end
+        if key == Enum.KeyCode.Q then keys.Q = false end
+        if key == Enum.KeyCode.E then keys.E = false end
+    end)
+    
+    local connection
+    connection = RunService.RenderStepped:Connect(function(dt)
+        if not flying or not player.Character or not rootPart or not bodyVelocity then
+            connection:Disconnect()
+            inputBegan:Disconnect()
+            inputEnded:Disconnect()
+            return
+        end
+        
+        local moveDirection = Vector3.new()
+        local camera = workspace.CurrentCamera
+        local forward = camera.CFrame.LookVector
+        local right = camera.CFrame.RightVector
+        
+        if keys.W then moveDirection = moveDirection + forward end
+        if keys.S then moveDirection = moveDirection - forward end
+        if keys.A then moveDirection = moveDirection - right end
+        if keys.D then moveDirection = moveDirection + right end
+        if keys.Space then moveDirection = moveDirection + Vector3.new(0, 1, 0) end
+        if keys.Q then moveDirection = moveDirection - Vector3.new(0, 1, 0) end
+        
+        if moveDirection.Magnitude > 0 then
+            moveDirection = moveDirection.Unit
+            lastMove = tick()
+        end
+        
+        local velocity = moveDirection * flySpeed
+        bodyVelocity.Velocity = velocity
+        
+        -- Update gyro to face direction smoothly
+        if moveDirection.Magnitude > 0 then
+            bodyGyro.CFrame = CFrame.new(rootPart.Position, rootPart.Position + moveDirection)
+        end
+        
+        -- Advanced bypass: rapid reapplication and anti-anti-fly
+        if antiBypass then
+            advancedBypass(rootPart, velocity)
+        end
+    end)
+    
+    flyConnections = {inputBegan, inputEnded, connection}
+end
+
+local function stopFly()
+    if bodyVelocity then bodyVelocity:Destroy() end
+    if bodyGyro then bodyGyro:Destroy() end
+    bodyVelocity = nil
+    bodyGyro = nil
+    if player.Character and player.Character:FindFirstChild("Humanoid") then
+        player.Character.Humanoid.PlatformStand = false
+    end
+    for _, conn in pairs(flyConnections) do
+        if conn then conn:Disconnect() end
+    end
+    flyConnections = {}
+end
+
+flyToggle.MouseButton1Click:Connect(function()
+    flying = not flying
+    if flying then
+        startFly()
+        flyToggle.BackgroundColor3 = Color3.fromRGB(70, 150, 70)
+        flyToggle.Text = "🔴 Disable Fly"
+    else
+        stopFly()
+        flyToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+        flyToggle.Text = "🔘 Enable Fly"
     end
 end)
 
-mainFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
+antiFlyBypass.MouseButton1Click:Connect(function()
+    antiBypass = not antiBypass
+    if antiBypass then
+        antiFlyBypass.BackgroundColor3 = Color3.fromRGB(70, 150, 70)
+        antiFlyBypass.Text = "🛡️ Adv Bypass: ON"
+    else
+        antiFlyBypass.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+        antiFlyBypass.Text = "🛡️ Adv Bypass: OFF"
     end
+end)
+
+-- Fly speed slider
+local draggingFly = false
+local function updateFlySpeed(input)
+    local relativeX = math.clamp((input.Position.X - flySliderBg.AbsolutePosition.X) / flySliderBg.AbsoluteSize.X, 0, 1)
+    flySpeed = math.floor(10 + (relativeX * 190))
+    flySliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
+    flySliderButton.Position = UDim2.new(relativeX, -8, 0, -6)
+    flySpeedLabel.Text = "Fly Speed: " .. flySpeed
+end
+
+flySliderButton.MouseButton1Down:Connect(function()
+    draggingFly = true
+    updateFlySpeed({Position = UserInputService:GetMouseLocation()})
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        local delta = input.Position - dragStart
-        mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    if draggingFly and input.UserInputType == Enum.UserInputType.MouseMovement then
+        updateFlySpeed(input)
     end
 end)
 
--- Title bar with gradient
-local titleBar = Instance.new("Frame")
-titleBar.Name = "TitleBar"
-titleBar.Size = UDim2.new(1, 0, 0, 45)
-titleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-titleBar.BorderSizePixel = 0
-titleBar.Parent = mainFrame
-
-local titleGradient = Instance.new("UIGradient")
-titleGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(45, 45, 55)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(35, 35, 45))
-})
-titleGradient.Parent = titleBar
-
-local titleText = Instance.new("TextLabel")
-titleText.Size = UDim2.new(0.8, 0, 1, 0)
-titleText.Position = UDim2.new(0, 15, 0, 0)
-titleText.BackgroundTransparency = 1
-titleText.Text = "✨ Custom Hub"
-titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleText.TextSize = 18
-titleText.Font = Enum.Font.GothamBold
-titleText.TextXAlignment = Enum.TextXAlignment.Left
-titleText.TextYAlignment = Enum.TextYAlignment.Center
-titleText.Parent = titleBar
-
--- Minimize button
-local minimizeButton = Instance.new("TextButton")
-minimizeButton.Size = UDim2.new(0, 30, 1, -8)
-minimizeButton.Position = UDim2.new(1, -65, 0, 4)
-minimizeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-minimizeButton.BackgroundTransparency = 0.5
-minimizeButton.Text = "−"
-minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-minimizeButton.TextSize = 20
-minimizeButton.Font = Enum.Font.GothamBold
-minimizeButton.Parent = titleBar
-
--- Close button
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 30, 1, -8)
-closeButton.Position = UDim2.new(1, -35, 0, 4)
-closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-closeButton.BackgroundTransparency = 0.3
-closeButton.Text = "✕"
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.TextSize = 16
-closeButton.Font = Enum.Font.GothamBold
-closeButton.Parent = titleBar
-
-closeButton.MouseButton1Click:Connect(function()
-    screenGui:Destroy()
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        draggingFly = false
+    end
 end)
 
--- Minimize functionality
-local minimized = false
-local originalSize = mainFrame.Size
-local originalPos = mainFrame.Position
+flySliderBg.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        updateFlySpeed(input)
+    end
+end)
 
-minimizeButton.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    if minimized then
-        local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local targetSize = UDim2.new(0, 550, 0, 45)
-        local targetPos = UDim2.new(0.5, -275, mainFrame.Position.Y.Scale, mainFrame.Position.Y.Offset)
-        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = targetSize})
-        tween:Play()
-        minimizeButton.Text = "+"
+-- ============================================
+-- INFINITE JUMP
+-- ============================================
+local infiniteJumpFrame = Instance.new("Frame")
+infiniteJumpFrame.Size = UDim2.new(1, -20, 0, 70)
+infiniteJumpFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+infiniteJumpFrame.BorderSizePixel = 0
+infiniteJumpFrame.Parent = container
+
+local jumpCorner = Instance.new("UICorner")
+jumpCorner.CornerRadius = UDim.new(0, 8)
+jumpCorner.Parent = infiniteJumpFrame
+
+local jumpTitle = Instance.new("TextLabel")
+jumpTitle.Size = UDim2.new(1, -10, 0, 25)
+jumpTitle.Position = UDim2.new(0, 5, 0, 5)
+jumpTitle.BackgroundTransparency = 1
+jumpTitle.Text = "🦘 Infinite Jump"
+jumpTitle.TextColor3 = Color3.fromRGB(100, 200, 255)
+jumpTitle.TextSize = 16
+jumpTitle.Font = Enum.Font.GothamBold
+jumpTitle.TextXAlignment = Enum.TextXAlignment.Left
+jumpTitle.Parent = infiniteJumpFrame
+
+local infiniteJumpToggle = Instance.new("TextButton")
+infiniteJumpToggle.Size = UDim2.new(0.48, 0, 0, 35)
+infiniteJumpToggle.Position = UDim2.new(0, 10, 0, 35)
+infiniteJumpToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+infiniteJumpToggle.Text = "🔘 Infinite Jump: OFF"
+infiniteJumpToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+infiniteJumpToggle.TextSize = 14
+infiniteJumpToggle.Font = Enum.Font.GothamBold
+infiniteJumpToggle.Parent = infiniteJumpFrame
+
+local infJumpCorner = Instance.new("UICorner")
+infJumpCorner.CornerRadius = UDim.new(0, 6)
+infJumpCorner.Parent = infiniteJumpToggle
+
+local infiniteJumpActive = false
+local jumpConnection
+
+infiniteJumpToggle.MouseButton1Click:Connect(function()
+    infiniteJumpActive = not infiniteJumpActive
+    if infiniteJumpActive then
+        infiniteJumpToggle.BackgroundColor3 = Color3.fromRGB(70, 150, 70)
+        infiniteJumpToggle.Text = "🔴 Infinite Jump: ON"
+        jumpConnection = UserInputService.JumpRequest:Connect(function()
+            if player.Character and player.Character:FindFirstChild("Humanoid") then
+                player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end)
     else
-        local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local targetSize = UDim2.new(0, 550, 0, 500)
-        local tween = TweenService:Create(mainFrame, tweenInfo, {Size = targetSize})
-        tween:Play()
-        minimizeButton.Text = "−"
+        infiniteJumpToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+        infiniteJumpToggle.Text = "🔘 Infinite Jump: OFF"
+        if jumpConnection then jumpConnection:Disconnect() end
     end
 end)
 
--- Tab buttons container
-local tabButtons = Instance.new("Frame")
-tabButtons.Name = "TabButtons"
-tabButtons.Size = UDim2.new(0, 180, 1, -45)
-tabButtons.Position = UDim2.new(0, 0, 0, 45)
-tabButtons.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-tabButtons.BorderSizePixel = 0
-tabButtons.Parent = mainFrame
+-- ============================================
+-- NOCLIP
+-- ============================================
+local noclipFrame = Instance.new("Frame")
+noclipFrame.Size = UDim2.new(1, -20, 0, 70)
+noclipFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+noclipFrame.BorderSizePixel = 0
+noclipFrame.Parent = container
 
--- Content frame
-local contentFrame = Instance.new("Frame")
-contentFrame.Name = "Content"
-contentFrame.Size = UDim2.new(1, -180, 1, -45)
-contentFrame.Position = UDim2.new(0, 180, 0, 45)
-contentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-contentFrame.BorderSizePixel = 0
-contentFrame.Parent = mainFrame
+local noclipCorner = Instance.new("UICorner")
+noclipCorner.CornerRadius = UDim.new(0, 8)
+noclipCorner.Parent = noclipFrame
 
--- Tab data
-local tabs = {
-    {name = "🏠 Main", url = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/refs/heads/main/main_tab.lua"},
-    {name = "🎮 Misc", url = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/refs/heads/main/misc.lua"},
-    {name = "🛡️ Gardan", url = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/refs/heads/main/gardan.lua"},
-    {name = "💀 Exploit", url = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/refs/heads/main/exploit.lua"},
-    {name = "🚀 Teleport", url = "https://raw.githubusercontent.com/jannesfox123-art/Roblox/refs/heads/main/teleport.lua"}
-}
+local noclipTitle = Instance.new("TextLabel")
+noclipTitle.Size = UDim2.new(1, -10, 0, 25)
+noclipTitle.Position = UDim2.new(0, 5, 0, 5)
+noclipTitle.BackgroundTransparency = 1
+noclipTitle.Text = "🌀 NoClip"
+noclipTitle.TextColor3 = Color3.fromRGB(100, 200, 255)
+noclipTitle.TextSize = 16
+noclipTitle.Font = Enum.Font.GothamBold
+noclipTitle.TextXAlignment = Enum.TextXAlignment.Left
+noclipTitle.Parent = noclipFrame
 
-local tabObjects = {}
-local currentTab = nil
+local noclipToggle = Instance.new("TextButton")
+noclipToggle.Size = UDim2.new(0.48, 0, 0, 35)
+noclipToggle.Position = UDim2.new(0, 10, 0, 35)
+noclipToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+noclipToggle.Text = "🔘 NoClip: OFF"
+noclipToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+noclipToggle.TextSize = 14
+noclipToggle.Font = Enum.Font.GothamBold
+noclipToggle.Parent = noclipFrame
 
--- Modern slider creation function
-local function createModernSlider(parent, title, minValue, maxValue, defaultValue, callback)
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(1, -20, 0, 70)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
-    sliderFrame.BorderSizePixel = 0
-    sliderFrame.Parent = parent
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 8)
-    corner.Parent = sliderFrame
-    
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, -10, 0, 25)
-    titleLabel.Position = UDim2.new(0, 5, 0, 5)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = title
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.TextSize = 14
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    titleLabel.Parent = sliderFrame
-    
-    local valueLabel = Instance.new("TextLabel")
-    valueLabel.Size = UDim2.new(0, 50, 0, 25)
-    valueLabel.Position = UDim2.new(1, -55, 0, 5)
-    valueLabel.BackgroundTransparency = 1
-    valueLabel.Text = tostring(defaultValue)
-    valueLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
-    valueLabel.TextSize = 14
-    valueLabel.Font = Enum.Font.GothamBold
-    valueLabel.TextXAlignment = Enum.TextXAlignment.Right
-    valueLabel.Parent = sliderFrame
-    
-    local sliderBg = Instance.new("Frame")
-    sliderBg.Size = UDim2.new(1, -20, 0, 4)
-    sliderBg.Position = UDim2.new(0, 10, 0, 40)
-    sliderBg.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-    sliderBg.BorderSizePixel = 0
-    sliderBg.Parent = sliderFrame
-    
-    local sliderBgCorner = Instance.new("UICorner")
-    sliderBgCorner.CornerRadius = UDim.new(1, 0)
-    sliderBgCorner.Parent = sliderBg
-    
-    local sliderFill = Instance.new("Frame")
-    sliderFill.Size = UDim2.new((defaultValue - minValue) / (maxValue - minValue), 0, 1, 0)
-    sliderFill.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
-    sliderFill.BorderSizePixel = 0
-    sliderFill.Parent = sliderBg
-    
-    local sliderFillCorner = Instance.new("UICorner")
-    sliderFillCorner.CornerRadius = UDim.new(1, 0)
-    sliderFillCorner.Parent = sliderFill
-    
-    local sliderButton = Instance.new("TextButton")
-    sliderButton.Size = UDim2.new(0, 16, 0, 16)
-    sliderButton.Position = UDim2.new((defaultValue - minValue) / (maxValue - minValue), -8, 0, -6)
-    sliderButton.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
-    sliderButton.BorderSizePixel = 0
-    sliderButton.Text = ""
-    sliderButton.Parent = sliderFrame
-    
-    local sliderButtonCorner = Instance.new("UICorner")
-    sliderButtonCorner.CornerRadius = UDim.new(1, 0)
-    sliderButtonCorner.Parent = sliderButton
-    
-    local draggingSlider = false
-    
-    local function updateSlider(input)
-        local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
-        local value = minValue + (relativeX * (maxValue - minValue))
-        value = math.floor(value)
-        
-        sliderFill.Size = UDim2.new(relativeX, 0, 1, 0)
-        sliderButton.Position = UDim2.new(relativeX, -8, 0, -6)
-        valueLabel.Text = tostring(value)
-        
-        if callback then
-            callback(value)
-        end
-    end
-    
-    sliderButton.MouseButton1Down:Connect(function()
-        draggingSlider = true
-        updateSlider({Position = UserInputService:GetMouseLocation()})
-    end)
-    
-    UserInputService.InputChanged:Connect(function(input)
-        if draggingSlider and input.UserInputType == Enum.UserInputType.MouseMovement then
-            updateSlider(input)
-        end
-    end)
-    
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            draggingSlider = false
-        end
-    end)
-    
-    sliderBg.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            updateSlider(input)
-        end
-    end)
-    
-    return sliderFrame
-end
+local noclipCornerBtn = Instance.new("UICorner")
+noclipCornerBtn.CornerRadius = UDim.new(0, 6)
+noclipCornerBtn.Parent = noclipToggle
 
--- Modern button creation function
-local function createModernButton(parent, text, color, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -20, 0, 40)
-    button.BackgroundColor3 = color or Color3.fromRGB(60, 60, 70)
-    button.Text = text
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.TextSize = 14
-    button.Font = Enum.Font.GothamBold
-    button.Parent = parent
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 8)
-    corner.Parent = button
-    
-    button.MouseButton1Click:Connect(callback)
-    
-    -- Hover effect
-    button.MouseEnter:Connect(function()
-        local tween = TweenService:Create(button, TweenInfo.new(0.2), {BackgroundTransparency = 0.2})
-        tween:Play()
-    end)
-    
-    button.MouseLeave:Connect(function()
-        local tween = TweenService:Create(button, TweenInfo.new(0.2), {BackgroundTransparency = 0})
-        tween:Play()
-    end)
-    
-    return button
-end
+local noclipActive = false
+local noclipConnection
 
--- Function to load script from URL
-local function loadScriptFromUrl(url, container)
-    local success, result = pcall(function()
-        return game:HttpGet(url)
-    end)
-    
-    if success and result then
-        local scriptEnv = {
-            container = container,
-            player = player,
-            players = game:GetService("Players"),
-            workspace = workspace,
-            game = game,
-            Instance = Instance,
-            Vector3 = Vector3,
-            Color3 = Color3,
-            UDim2 = UDim2,
-            Enum = Enum,
-            spawn = spawn,
-            wait = wait,
-            print = print,
-            warn = warn,
-            pcall = pcall,
-            TweenService = TweenService,
-            UserInputService = UserInputService,
-            createModernSlider = createModernSlider,
-            createModernButton = createModernButton,
-            tabContainer = container
-        }
-        
-        local scriptFunction, loadError = loadstring(result)
-        if scriptFunction then
-            setfenv(scriptFunction, scriptEnv)
-            local execSuccess, execError = pcall(scriptFunction)
-            if not execSuccess then
-                warn("Error executing tab script: " .. tostring(execError))
-                local errorLabel = Instance.new("TextLabel")
-                errorLabel.Size = UDim2.new(1, 0, 0, 30)
-                errorLabel.BackgroundTransparency = 1
-                errorLabel.Text = "Error: " .. tostring(execError):sub(1, 100)
-                errorLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-                errorLabel.TextSize = 12
-                errorLabel.Font = Enum.Font.Gotham
-                errorLabel.Parent = container
-                return false
+noclipToggle.MouseButton1Click:Connect(function()
+    noclipActive = not noclipActive
+    if noclipActive then
+        noclipToggle.BackgroundColor3 = Color3.fromRGB(70, 150, 70)
+        noclipToggle.Text = "🔴 NoClip: ON"
+        noclipConnection = RunService.Stepped:Connect(function()
+            if player.Character then
+                for _, part in pairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CanCollide = false
+                    end
+                end
             end
-            return true
-        else
-            warn("Error loading tab script: " .. tostring(loadError))
-            return false
-        end
+        end)
     else
-        warn("Failed to fetch script from URL: " .. url)
-        return false
-    end
-end
-
--- Function to create and switch tabs
-local function createTab(tabData, index)
-    local tabButton = Instance.new("TextButton")
-    tabButton.Name = tabData.name .. "Button"
-    tabButton.Size = UDim2.new(1, -10, 0, 40)
-    tabButton.Position = UDim2.new(0, 5, 0, (index - 1) * 45 + 10)
-    tabButton.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-    tabButton.BackgroundTransparency = 0.5
-    tabButton.Text = tabData.name
-    tabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
-    tabButton.TextSize = 14
-    tabButton.Font = Enum.Font.Gotham
-    tabButton.TextXAlignment = Enum.TextXAlignment.Left
-    tabButton.TextYAlignment = Enum.TextYAlignment.Center
-    tabButton.Parent = tabButtons
-    
-    local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(0, 8)
-    buttonCorner.Parent = tabButton
-    
-    local tabContainer = Instance.new("ScrollingFrame")
-    tabContainer.Name = tabData.name .. "Container"
-    tabContainer.Size = UDim2.new(1, -10, 1, -10)
-    tabContainer.Position = UDim2.new(0, 5, 0, 5)
-    tabContainer.BackgroundTransparency = 1
-    tabContainer.ScrollBarThickness = 6
-    tabContainer.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 110)
-    tabContainer.Visible = false
-    tabContainer.Parent = contentFrame
-    
-    local uiList = Instance.new("UIListLayout")
-    uiList.Padding = UDim.new(0, 10)
-    uiList.SortOrder = Enum.SortOrder.LayoutOrder
-    uiList.Parent = tabContainer
-    
-    local uiPadding = Instance.new("UIPadding")
-    uiPadding.PaddingTop = UDim.new(0, 10)
-    uiPadding.PaddingBottom = UDim.new(0, 10)
-    uiPadding.Parent = tabContainer
-    
-    local loaded = loadScriptFromUrl(tabData.url, tabContainer)
-    
-    if not loaded then
-        local errorLabel = Instance.new("TextLabel")
-        errorLabel.Size = UDim2.new(1, 0, 0, 40)
-        errorLabel.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
-        errorLabel.BackgroundTransparency = 0.2
-        errorLabel.Text = "⚠️ Failed to load " .. tabData.name .. " tab"
-        errorLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        errorLabel.TextSize = 14
-        errorLabel.Font = Enum.Font.Gotham
-        errorLabel.Parent = tabContainer
-        
-        local errorCorner = Instance.new("UICorner")
-        errorCorner.CornerRadius = UDim.new(0, 8)
-        errorCorner.Parent = errorLabel
-    end
-    
-    tabButton.MouseButton1Click:Connect(function()
-        for _, tab in pairs(tabObjects) do
-            if tab and tab.container then
-                tab.container.Visible = false
-            end
-            if tab and tab.button then
-                tab.button.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
-                tab.button.BackgroundTransparency = 0.5
-                tab.button.TextColor3 = Color3.fromRGB(200, 200, 200)
+        noclipToggle.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+        noclipToggle.Text = "🔘 NoClip: OFF"
+        if noclipConnection then noclipConnection:Disconnect() end
+        if player.Character then
+            for _, part in pairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
             end
         end
-        
-        tabContainer.Visible = true
-        tabButton.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
-        tabButton.BackgroundTransparency = 0
-        tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        currentTab = tabData.name
-    end)
-    
-    return {
-        button = tabButton,
-        container = tabContainer
-    }
-end
+    end
+end)
 
--- Create all tabs
-for i, tabData in ipairs(tabs) do
-    tabObjects[i] = createTab(tabData, i)
-end
+-- ============================================
+-- ANTI-AFK
+-- ============================================
+local antiAFKFrame = Instance.new("Frame")
+antiAFKFrame.Size = UDim2.new(1, -20, 0, 70)
+antiAFKFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+antiAFKFrame.BorderSizePixel = 0
+antiAFKFrame.Parent = container
 
--- Show first tab by default
-if tabObjects[1] then
-    tabObjects[1].container.Visible = true
-    tabObjects[1].button.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
-    tabObjects[1].button.BackgroundTransparency = 0
-    tabObjects[1].button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    currentTab = tabs[1].name
-end
+local aaCorner = Instance.new("UICorner")
+aaCorner.CornerRadius = UDim.new(0, 8)
+aaCorner.Parent = antiAFKFrame
 
-print("✨ Custom Hub GUI loaded successfully!")
+local aaTitle = Instance.new("TextLabel")
+aaTitle.Size = UDim2.new(1, -10, 0, 25)
+aaTitle.Position = UDim2.new(0, 5, 0, 5)
+aaTitle.BackgroundTransparency = 1
+aaTitle.Text = "💤 Anti-AFK"
+aaTitle.TextColor3 = Color3.fromRGB(100, 200, 255)
+aaTitle.TextSize = 16
+aaTitle.Font = Enum.Font.GothamBold
+aaTitle.TextXAlignment = Enum.TextXAlignment.Left
+aaTitle.Parent = antiAFKFrame
+
+local antiAFKButton = Instance.new("TextButton")
+antiAFKButton.Size = UDim2.new(0.48, 0, 0, 35)
+antiAFKButton.Position = UDim2.new(0, 10, 0, 35)
+antiAFKButton.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+antiAFKButton.Text = "💤 Anti-AFK: OFF"
+antiAFKButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+antiAFKButton.TextSize = 13
+antiAFKButton.Font = Enum.Font.GothamBold
+antiAFKButton.Parent = antiAFKFrame
+
+local afkCorner = Instance.new("UICorner")
+afkCorner.CornerRadius = UDim.new(0, 6)
+afkCorner.Parent = antiAFKButton
+
+local afkActive = false
+local afkConnection
+
+antiAFKButton.MouseButton1Click:Connect(function()
+    afkActive = not afkActive
+    if afkActive then
+        antiAFKButton.BackgroundColor3 = Color3.fromRGB(70, 150, 70)
+        antiAFKButton.Text = "💤 Anti-AFK: ON"
+        afkConnection = RunService.RenderStepped:Connect(function()
+            local vu = game:GetService("VirtualUser")
+            vu:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+            task.wait(0.1)
+            vu:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        end)
+    else
+        antiAFKButton.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+        antiAFKButton.Text = "💤 Anti-AFK: OFF"
+        if afkConnection then afkConnection:Disconnect() end
+    end
+end)
+
+print("Misc tab loaded: Fly with advanced bypass, Infinite Jump, NoClip, Anti-AFK")
