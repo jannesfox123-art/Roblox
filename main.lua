@@ -117,18 +117,43 @@ local function loadScriptFromUrl(url, container)
     end)
     
     if success and result then
+        -- Create environment with container and other useful variables
         local scriptEnv = {
             container = container,
             player = player,
-            playerGui = playerGui
+            players = game:GetService("Players"),
+            workspace = workspace,
+            game = game,
+            Instance = Instance,
+            Vector3 = Vector3,
+            Color3 = Color3,
+            UDim2 = UDim2,
+            Enum = Enum,
+            spawn = spawn,
+            wait = wait,
+            print = print,
+            warn = warn,
+            pcall = pcall,
+            -- Also include the container as 'tabContainer' for clarity
+            tabContainer = container
         }
         
         local scriptFunction, loadError = loadstring(result)
         if scriptFunction then
+            -- Set the environment for the script
             setfenv(scriptFunction, scriptEnv)
             local execSuccess, execError = pcall(scriptFunction)
             if not execSuccess then
                 warn("Error executing tab script: " .. tostring(execError))
+                -- Show error in the container
+                local errorLabel = Instance.new("TextLabel")
+                errorLabel.Size = UDim2.new(1, 0, 0, 30)
+                errorLabel.BackgroundTransparency = 1
+                errorLabel.Text = "Error: " .. tostring(execError):sub(1, 100)
+                errorLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+                errorLabel.TextSize = 12
+                errorLabel.Font = Enum.Font.Gotham
+                errorLabel.Parent = container
                 return false
             end
             return true
@@ -169,7 +194,13 @@ local function createTab(tabData, index)
     -- Add UIListLayout for automatic positioning
     local uiList = Instance.new("UIListLayout")
     uiList.Padding = UDim.new(0, 5)
+    uiList.SortOrder = Enum.SortOrder.LayoutOrder
     uiList.Parent = tabContainer
+    
+    -- Add UI Padding
+    local uiPadding = Instance.new("UIPadding")
+    uiPadding.PaddingTop = UDim.new(0, 5)
+    uiPadding.Parent = tabContainer
     
     -- Load the tab's script
     local loaded = loadScriptFromUrl(tabData.url, tabContainer)
@@ -189,8 +220,12 @@ local function createTab(tabData, index)
     tabButton.MouseButton1Click:Connect(function()
         -- Hide all tabs
         for _, tab in pairs(tabObjects) do
-            tab.container.Visible = false
-            tab.button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            if tab and tab.container then
+                tab.container.Visible = false
+            end
+            if tab and tab.button then
+                tab.button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+            end
         end
         
         -- Show selected tab
